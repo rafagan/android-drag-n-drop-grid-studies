@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 
-class RecyclerListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
+class RecyclerListAdapter : RecyclerView.Adapter<ItemViewHolder>(), ItemTouchHelperAdapter {
     private val mItems: MutableList<String> =
         ArrayList()
 
@@ -32,5 +32,23 @@ class RecyclerListAdapter : RecyclerView.Adapter<ItemViewHolder>() {
 
     init {
         mItems.addAll(listOf(*STRINGS))
+    }
+
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(mItems, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(mItems, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+    }
+
+    override fun onItemDismiss(position: Int) {
+        mItems.removeAt(position)
+        notifyItemRemoved(position)
     }
 }
