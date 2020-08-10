@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name = "drag n drop grid"
