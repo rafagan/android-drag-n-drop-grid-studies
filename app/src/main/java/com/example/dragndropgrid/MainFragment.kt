@@ -7,10 +7,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), OnStartDragListener {
+    lateinit var touchHelper: ItemTouchHelper
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -21,15 +25,20 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val recyclerView =
-            view.findViewById<View>(R.id.recycler_view) as RecyclerView
+        val recyclerView = view.findViewById<View>(R.id.recycler_view) as RecyclerView
         recyclerView.setHasFixedSize(true)
         recyclerView.layoutManager = GridLayoutManager(activity, 2)
+//        recyclerView.layoutManager = LinearLayoutManager(activity)
         val adapter = RecyclerListAdapter()
+        adapter.mDragStartListener = this
         recyclerView.adapter = adapter
 
         val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
-        val touchHelper = ItemTouchHelper(callback)
+        touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView)
+    }
+
+    override fun onStartDrag(viewHolder: ViewHolder) {
+        touchHelper.startDrag(viewHolder)
     }
 }

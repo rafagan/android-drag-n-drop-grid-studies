@@ -1,16 +1,30 @@
 package com.example.dragndropgrid
 
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 
 class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHolder>(), ItemTouchHelperAdapter {
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView? = itemView.findViewById(R.id.text)
+    var mDragStartListener: OnStartDragListener? = null
+
+    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ItemTouchHelperViewHolder {
+        val textView: TextView = itemView.findViewById(R.id.text)
+        val handleView: ImageView = itemView.findViewById(R.id.handle)
+
+        override fun onItemSelected() {
+            itemView.setBackgroundColor(Color.LTGRAY)
+        }
+
+        override fun onItemClear() {
+            itemView.setBackgroundColor(0)
+        }
     }
 
     private val mItems: MutableList<String> = ArrayList()
@@ -22,7 +36,15 @@ class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHol
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.textView!!.text = mItems[position]
+        holder.textView.text = mItems[position]
+
+        holder.handleView.setOnTouchListener { view, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_DOWN) {
+                mDragStartListener?.onStartDrag(holder)
+            }
+
+            return@setOnTouchListener false
+        }
     }
 
     override fun getItemCount(): Int {
@@ -40,15 +62,8 @@ class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHol
     }
 
     override fun onItemMove(fromPosition: Int, toPosition: Int) {
-        if (fromPosition < toPosition) {
-            for (i in fromPosition until toPosition) {
-                Collections.swap(mItems, i, i + 1)
-            }
-        } else {
-            for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(mItems, i, i - 1)
-            }
-        }
+        Collections.swap(mItems, fromPosition, toPosition)
+//        notifyDataSetChanged()
         notifyItemMoved(fromPosition, toPosition)
     }
 
