@@ -10,8 +10,7 @@ import java.util.*
 
 class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHolder>(), ItemTouchHelperAdapter {
     class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView: TextView? = itemView as? TextView
-
+        val textView: TextView? = itemView.findViewById(R.id.text)
     }
 
     private val mItems: MutableList<String> = ArrayList()
