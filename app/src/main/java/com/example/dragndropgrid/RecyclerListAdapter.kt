@@ -1,14 +1,20 @@
 package com.example.dragndropgrid
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
 
 
-class RecyclerListAdapter : RecyclerView.Adapter<ItemViewHolder>(), ItemTouchHelperAdapter {
-    private val mItems: MutableList<String> =
-        ArrayList()
+class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHolder>(), ItemTouchHelperAdapter {
+    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val textView: TextView? = itemView as? TextView
+
+    }
+
+    private val mItems: MutableList<String> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view =
