@@ -8,14 +8,7 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:paddingBottom="16dp"
-        android:paddingTop="16dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:scrollbarStyle="outsideOverlay"
-        android:scrollbars="vertical"
+        android:padding="16dp"
     />
 
 </RelativeLayout>
