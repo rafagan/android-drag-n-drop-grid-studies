@@ -19,9 +19,9 @@ class DraggableGridExampleAdapter(private val mProvider: AbstractDataProvider) :
     private var mItemMoveMode = RecyclerViewDragDropManager.ITEM_MOVE_MODE_SWAP
 
     class MyViewHolder(v: View) : AbstractDraggableItemViewHolder(v) {
-        var mContainer: FrameLayout = v.findViewById(R.id.container)
+        var container: FrameLayout = v.findViewById(R.id.container)
 //        var mDragHandle: View = v.findViewById(R.id.drag_handle)
-        var mTextView: TextView = v.findViewById(R.id.text1)
+        var textView: TextView = v.findViewById(R.id.txt_cell)
 
     }
 
@@ -42,7 +42,7 @@ class DraggableGridExampleAdapter(private val mProvider: AbstractDataProvider) :
         viewType: Int
     ): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val v: View = inflater.inflate(R.layout.list_grid_item, parent, false)
+        val v: View = inflater.inflate(R.layout.item_test2, parent, false)
         return MyViewHolder(v)
     }
 
@@ -53,7 +53,7 @@ class DraggableGridExampleAdapter(private val mProvider: AbstractDataProvider) :
         val item = mProvider.getItem(position)
 
         // set text
-        holder.mTextView.text = item!!.text
+        holder.textView.text = item!!.text
 
         // set background resource (target view ID: container)
         val dragState = holder.dragState
@@ -64,7 +64,7 @@ class DraggableGridExampleAdapter(private val mProvider: AbstractDataProvider) :
                     bgResId = R.drawable.bg_item_dragging_active_state
 
                     // need to clear drawable state here to get correct appearance of the dragging item.
-                    DrawableUtils.clearState(holder.mContainer.foreground)
+                    DrawableUtils.clearState(holder.container.foreground)
                 }
                 dragState.isDragging -> {
                     bgResId = R.drawable.bg_item_dragging_state
@@ -73,7 +73,7 @@ class DraggableGridExampleAdapter(private val mProvider: AbstractDataProvider) :
                     bgResId = R.drawable.bg_item_normal_state
                 }
             }
-            holder.mContainer.setBackgroundResource(bgResId)
+            holder.container.setBackgroundResource(bgResId)
         }
     }
 

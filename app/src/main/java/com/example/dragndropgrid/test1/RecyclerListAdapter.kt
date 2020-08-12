@@ -34,7 +34,7 @@ class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHol
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_test1, parent, false)
         return ItemViewHolder(
             view
         )
