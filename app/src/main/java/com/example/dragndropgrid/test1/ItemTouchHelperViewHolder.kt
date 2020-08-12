@@ -1,4 +1,4 @@
-package com.example.dragndropgrid
+package com.example.dragndropgrid.test1
 
 import androidx.recyclerview.widget.ItemTouchHelper
 

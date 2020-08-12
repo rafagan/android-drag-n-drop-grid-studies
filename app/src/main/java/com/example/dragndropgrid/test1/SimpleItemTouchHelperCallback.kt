@@ -1,9 +1,11 @@
-package com.example.dragndropgrid
+package com.example.dragndropgrid.test1
 
 import android.graphics.Canvas
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.dragndropgrid.test1.ItemTouchHelperAdapter
+import com.example.dragndropgrid.test1.ItemTouchHelperViewHolder
 import kotlin.math.abs
 
 
@@ -16,6 +18,7 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
         return true
     }
 
+    // TODO: Se for vazio nao deixa dar drag
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: ViewHolder): Int {
         val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.END
         val swipeFlags = 0
@@ -28,6 +31,15 @@ class SimpleItemTouchHelperCallback(private val mAdapter: ItemTouchHelperAdapter
     ): Boolean {
         mAdapter.onItemMove(viewHolder.adapterPosition, target.adapterPosition)
         return true
+    }
+
+    // TODO: nao pode dropar em cima de espaço vazio
+    override fun canDropOver(
+        recyclerView: RecyclerView,
+        current: ViewHolder,
+        target: ViewHolder
+    ): Boolean {
+        return super.canDropOver(recyclerView, current, target)
     }
 
     override fun onSwiped(viewHolder: ViewHolder, direction: Int) {

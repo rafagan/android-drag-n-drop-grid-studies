@@ -1,4 +1,4 @@
-package com.example.dragndropgrid
+package com.example.dragndropgrid.test1
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,12 +7,13 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.example.dragndropgrid.R
 
 
-class MainFragment : Fragment(), OnStartDragListener {
+class MainFragment : Fragment(),
+    OnStartDragListener {
     lateinit var touchHelper: ItemTouchHelper
 
     override fun onCreateView(
@@ -33,7 +34,8 @@ class MainFragment : Fragment(), OnStartDragListener {
         adapter.mDragStartListener = this
         recyclerView.adapter = adapter
 
-        val callback: ItemTouchHelper.Callback = SimpleItemTouchHelperCallback(adapter)
+        val callback: ItemTouchHelper.Callback =
+            SimpleItemTouchHelperCallback(adapter)
         touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(recyclerView)
     }

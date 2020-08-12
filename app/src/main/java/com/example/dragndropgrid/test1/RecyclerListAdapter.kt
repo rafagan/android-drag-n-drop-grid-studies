@@ -1,4 +1,4 @@
-package com.example.dragndropgrid
+package com.example.dragndropgrid.test1
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,13 +8,16 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.dragndropgrid.R
 import java.util.*
 
 
-class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHolder>(), ItemTouchHelperAdapter {
+class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHolder>(),
+    ItemTouchHelperAdapter {
     var mDragStartListener: OnStartDragListener? = null
 
-    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ItemTouchHelperViewHolder {
+    class ItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        ItemTouchHelperViewHolder {
         val textView: TextView = itemView.findViewById(R.id.text)
         val handleView: ImageView = itemView.findViewById(R.id.handle)
 
@@ -32,7 +35,9 @@ class RecyclerListAdapter : RecyclerView.Adapter<RecyclerListAdapter.ItemViewHol
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.item_main, parent, false)
-        return ItemViewHolder(view)
+        return ItemViewHolder(
+            view
+        )
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
