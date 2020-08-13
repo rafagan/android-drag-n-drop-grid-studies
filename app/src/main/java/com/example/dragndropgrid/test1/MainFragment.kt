@@ -12,8 +12,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.example.dragndropgrid.R
 
 
-class MainFragment : Fragment(),
-    OnStartDragListener {
+class MainFragment : Fragment(), OnStartDragListener {
     lateinit var touchHelper: ItemTouchHelper
 
     override fun onCreateView(
