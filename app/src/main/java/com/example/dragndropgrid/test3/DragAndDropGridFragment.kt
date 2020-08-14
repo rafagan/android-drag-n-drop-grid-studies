@@ -1,6 +1,8 @@
 package com.example.dragndropgrid.test3
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,5 +23,28 @@ class DragAndDropGridFragment: Fragment() {
 
         rv_drag_and_drop_grid.layoutManager = GridLayoutManager(requireContext(), 2)
         rv_drag_and_drop_grid.adapter = adapter
+
+        run()
+    }
+
+    var toggle = false
+
+    private fun run() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            if(adapter.length == 8) {
+                toggle = true
+            }
+            if(adapter.length == 0) {
+                toggle = false
+            }
+
+            if(!toggle) {
+                adapter.add(adapter.length.toString())
+            } else {
+                adapter.remove(0)
+            }
+
+            run()
+        }, 1000)
     }
 }
