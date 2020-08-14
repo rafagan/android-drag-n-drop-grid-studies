@@ -4,7 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -15,23 +15,41 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemView
 import java.security.InvalidParameterException
 
 
-class DragAndDropGridAdapter(private val size: Int) :
+class DragAndDropGridAdapter(private val size: Int, private val onAdd: () -> Unit) :
     RecyclerView.Adapter<DragAndDropGridAdapter.ViewHolder>(),
     DraggableItemAdapter<DragAndDropGridAdapter.ViewHolder>
 {
-    class ViewHolder(v: View) : AbstractDraggableItemViewHolder(v) {
-        val container: FrameLayout = v.findViewById(R.id.vg_drag)
+    class ViewHolder(v: View, val onAdd: () -> Unit, val onRemove: (Int) -> Unit) : AbstractDraggableItemViewHolder(v) {
+        val container: ViewGroup = v.findViewById(R.id.vg_drag)
         val textView: TextView = v.findViewById(R.id.txt_drag)
         val dragView: ImageView = v.findViewById(R.id.img_drag)
+        val deleteButton: Button = v.findViewById(R.id.bt_delete)
+
+        fun bind(cell: Cell) {
+            textView.text = cell.content
+            container.setOnClickListener {
+                if(cell.type == CellType.ADD) onAdd()
+            }
+
+            if(cell.type == CellType.FILL) {
+                dragView.visibility = View.VISIBLE
+                deleteButton.visibility = View.VISIBLE
+                deleteButton.setOnClickListener { onRemove(cell.index) }
+            } else {
+                dragView.visibility = View.INVISIBLE
+                deleteButton.visibility = View.INVISIBLE
+            }
+        }
     }
 
-    private enum class CellType {
+    enum class CellType {
         BLANK, FILL, ADD
     }
 
-    private class Cell(val index: Int) {
+    class Cell(val index: Int) {
         var type = CellType.BLANK
         var content = ""
+        var id: Long = index.toLong()
 
         fun clear(): Cell {
             type = CellType.BLANK
@@ -54,13 +72,16 @@ class DragAndDropGridAdapter(private val size: Int) :
         fun swap(cell: Cell) {
             val tmpType = type
             val tmpContent = content
+            val tmpId = id
             type = cell.type
             content = cell.content
+            id = cell.id
             cell.type = tmpType
             cell.content = tmpContent
+            cell.id = tmpId
         }
 
-        override fun toString(): String = content
+        override fun toString(): String = id.toString()
     }
 
     private var count = 1
@@ -70,18 +91,18 @@ class DragAndDropGridAdapter(private val size: Int) :
 
     init {
         if(size % 2 != 0) throw InvalidParameterException("Size must be even")
-//        items = Array(size) { i ->
-//            val cell = Cell(i)
-//            cell.type = if(i == 0) CellType.ADD else CellType.BLANK
-//            cell.content = if(i == 0) "+" else ""
-//            cell
-//        }
-
         items = Array(size) { i ->
             val cell = Cell(i)
-            cell.set(i.toString())
+            cell.type = if(i == 0) CellType.ADD else CellType.BLANK
+            cell.content = if(i == 0) "+" else ""
             cell
         }
+
+//        items = Array(size) { i ->
+//            val cell = Cell(i)
+//            cell.set(i.toString())
+//            cell
+//        }
 
         setHasStableIds(true)
     }
@@ -111,7 +132,7 @@ class DragAndDropGridAdapter(private val size: Int) :
     }
 
     fun remove(index: Int) {
-        for(i in index until length) {
+        for(i in gtoa(index, size) until length) {
             val current = atog(i, size)
             if(i == length - 1 && length == size) {
                 items[current].setAdd()
@@ -132,7 +153,7 @@ class DragAndDropGridAdapter(private val size: Int) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val v: View = inflater.inflate(R.layout.cell_drag_and_drop_grid, parent, false)
-        val vh = ViewHolder(v)
+        val vh = ViewHolder(v, onAdd, { index -> remove(index) })
         vh.container.layoutParams.height = parent.measuredHeight / (size / 2)
         return vh
     }
@@ -140,7 +161,7 @@ class DragAndDropGridAdapter(private val size: Int) :
     override fun getItemCount(): Int = size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = items[position].content
+        holder.bind(items[position])
 
         val dragState = holder.dragState
         if (dragState.isUpdated) {
@@ -161,7 +182,7 @@ class DragAndDropGridAdapter(private val size: Int) :
         }
     }
 
-    override fun getItemId(position: Int): Long = items[position].index.toLong()
+    override fun getItemId(position: Int): Long = items[position].id
 
     /// DraggableItemAdapter
 

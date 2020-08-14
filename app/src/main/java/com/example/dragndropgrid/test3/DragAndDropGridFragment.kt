@@ -3,6 +3,7 @@ package com.example.dragndropgrid.test3
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,10 @@ import com.example.dragndropgrid.R
 import com.h6ah4i.android.widget.advrecyclerview.animator.DraggableItemAnimator
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager
 import kotlinx.android.synthetic.main.fragment_drag_and_drop_grid.*
+import kotlin.random.Random
 
 class DragAndDropGridFragment: Fragment() {
-    private val adapter = DragAndDropGridAdapter(8)
+    private val adapter = DragAndDropGridAdapter(8) { onAdd() }
     private lateinit var dragDropManager: RecyclerViewDragDropManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -27,7 +29,6 @@ class DragAndDropGridFragment: Fragment() {
         dragDropManager = RecyclerViewDragDropManager()
         dragDropManager.setInitiateOnLongPress(false)
         dragDropManager.setInitiateOnMove(true)
-        dragDropManager.setInitiateOnTouch(true)
         dragDropManager.isCheckCanDropEnabled = true
         dragDropManager.setLongPressTimeout(350)
         dragDropManager.dragStartItemAnimationDuration = 250
@@ -68,5 +69,9 @@ class DragAndDropGridFragment: Fragment() {
 
             run()
         }, 1000)
+    }
+
+    private fun onAdd() {
+        adapter.add(Random.nextInt().toString())
     }
 }
