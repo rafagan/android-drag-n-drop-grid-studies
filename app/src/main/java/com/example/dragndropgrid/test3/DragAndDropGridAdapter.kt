@@ -1,5 +1,6 @@
 package com.example.dragndropgrid.test3
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,21 +14,22 @@ import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder
 import java.security.InvalidParameterException
 
+
 class DragAndDropGridAdapter(private val size: Int) :
     RecyclerView.Adapter<DragAndDropGridAdapter.ViewHolder>(),
     DraggableItemAdapter<DragAndDropGridAdapter.ViewHolder>
 {
     class ViewHolder(v: View) : AbstractDraggableItemViewHolder(v) {
-        val viewGroup: FrameLayout = v.findViewById(R.id.vg_drag)
+        val container: FrameLayout = v.findViewById(R.id.vg_drag)
         val textView: TextView = v.findViewById(R.id.txt_drag)
         val dragView: ImageView = v.findViewById(R.id.img_drag)
     }
 
-    enum class CellType {
+    private enum class CellType {
         BLANK, FILL, ADD
     }
 
-    class Cell(val index: Int) {
+    private class Cell(val index: Int) {
         var type = CellType.BLANK
         var content = ""
 
@@ -57,6 +59,8 @@ class DragAndDropGridAdapter(private val size: Int) :
             cell.type = tmpType
             cell.content = tmpContent
         }
+
+        override fun toString(): String = content
     }
 
     private var count = 1
@@ -66,12 +70,20 @@ class DragAndDropGridAdapter(private val size: Int) :
 
     init {
         if(size % 2 != 0) throw InvalidParameterException("Size must be even")
+//        items = Array(size) { i ->
+//            val cell = Cell(i)
+//            cell.type = if(i == 0) CellType.ADD else CellType.BLANK
+//            cell.content = if(i == 0) "+" else ""
+//            cell
+//        }
+
         items = Array(size) { i ->
             val cell = Cell(i)
-            cell.type = if(i == 0) CellType.ADD else CellType.BLANK
-            cell.content = if(i == 0) "+" else ""
+            cell.set(i.toString())
             cell
         }
+
+        setHasStableIds(true)
     }
 
     /// Array to grid
@@ -120,38 +132,62 @@ class DragAndDropGridAdapter(private val size: Int) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val v: View = inflater.inflate(R.layout.cell_drag_and_drop_grid, parent, false)
-        return ViewHolder(v)
+        val vh = ViewHolder(v)
+        vh.container.layoutParams.height = parent.measuredHeight / (size / 2)
+        return vh
     }
 
     override fun getItemCount(): Int = size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.textView.text = items[position].content
+
+        val dragState = holder.dragState
+        if (dragState.isUpdated) {
+            val bgResId: Int
+            when {
+                dragState.isActive -> {
+                    bgResId = R.drawable.bg_item_dragging_active_state
+                    holder.container.foreground.state = intArrayOf()
+                }
+                dragState.isDragging -> {
+                    bgResId = R.drawable.bg_item_dragging_state
+                }
+                else -> {
+                    bgResId = R.drawable.bg_item_normal_state
+                }
+            }
+            holder.container.setBackgroundResource(bgResId)
+        }
     }
+
+    override fun getItemId(position: Int): Long = items[position].index.toLong()
 
     /// DraggableItemAdapter
 
     override fun onGetItemDraggableRange(holder: ViewHolder, position: Int): ItemDraggableRange? {
-        TODO("Not yet implemented")
+        return null
     }
 
     override fun onCheckCanStartDrag(holder: ViewHolder, position: Int, x: Int, y: Int): Boolean {
-        TODO("Not yet implemented")
+        return items[position].type == CellType.FILL
     }
 
     override fun onItemDragStarted(position: Int) {
-        TODO("Not yet implemented")
+        notifyDataSetChanged()
     }
 
     override fun onMoveItem(fromPosition: Int, toPosition: Int) {
-        TODO("Not yet implemented")
+        if (fromPosition == toPosition) return
+        items[toPosition].swap(items[fromPosition])
+        Log.d("xxx", items.joinToString { it.toString() })
     }
 
     override fun onCheckCanDrop(draggingPosition: Int, dropPosition: Int): Boolean {
-        TODO("Not yet implemented")
+        return items[dropPosition].type == CellType.FILL
     }
 
     override fun onItemDragFinished(fromPosition: Int, toPosition: Int, result: Boolean) {
-        TODO("Not yet implemented")
+        notifyDataSetChanged()
     }
 }

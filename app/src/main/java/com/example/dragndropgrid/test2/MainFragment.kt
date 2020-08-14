@@ -30,8 +30,9 @@ class MainFragment : Fragment() {
         recyclerView.itemAnimator = DraggableItemAnimator()
 
         dragDropManager = RecyclerViewDragDropManager()
-        dragDropManager.setInitiateOnLongPress(true)
-        dragDropManager.setInitiateOnMove(false)
+        dragDropManager.setInitiateOnLongPress(false)
+        dragDropManager.setInitiateOnMove(true)
+        dragDropManager.isCheckCanDropEnabled = true
         dragDropManager.setLongPressTimeout(350)
         dragDropManager.dragStartItemAnimationDuration = 250
         dragDropManager.draggingItemAlpha = 0.8f
